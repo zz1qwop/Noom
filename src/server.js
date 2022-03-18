@@ -22,7 +22,8 @@ wsServer.on("connection", (socket) => {
   socket.onAny((event) => {
     console.log(`Socket Event : ${event}`);
   });
-  socket.on("enter_room", (roomName, done) => {
+  socket.on("enter_room", (nickName, roomName, done) => {
+    socket["nickname"] = nickName;
     socket.join(roomName);
     done(); // back-end에서 호출하지만 front-end에서 실행된다.
     socket.to(roomName).emit("welcome", socket.nickname);
@@ -36,7 +37,6 @@ wsServer.on("connection", (socket) => {
     socket.to(room).emit("new_message", `${socket.nickname} : ${msg}`);
     done();
   });
-  socket.on("nickname", (nickname) => (socket["nickname"] = nickname));
 });
 
 // 같은 서버에서 http, webSocket 둘 다 작동 시킴

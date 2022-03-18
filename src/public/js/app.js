@@ -9,6 +9,7 @@ const room = document.getElementById("room");
 room.hidden = true;
 
 let roomName;
+let nickName;
 
 function addMessage(message) {
   const ul = room.querySelector("ul");
@@ -27,31 +28,27 @@ function handleMessageSubmit(event) {
   input.value = "";
 }
 
-function handleNicknameSubmit(event) {
-  event.preventDefault();
-  const input = room.querySelector("#name input");
-  socket.emit("nickname", input.value);
-}
-
 function showRoom() {
   welcome.hidden = true;
   room.hidden = false;
   const h3 = room.querySelector("h3");
   h3.innerText = `Room ${roomName}`;
   const msgForm = room.querySelector("#msg");
-  const nameForm = room.querySelector("#name");
   msgForm.addEventListener("submit", handleMessageSubmit);
   nameForm.addEventListener("submit", handleNicknameSubmit);
 }
 
 function handleRoomSubmit(event) {
   event.preventDefault();
-  const input = form.querySelector("input");
-  socket.emit("enter_room", input.value, showRoom);
+  const nickInput = form.querySelector("#nickName");
+  const roomInput = form.querySelector("#roomName");
+  socket.emit("enter_room", nickInput.value, roomInput.value, showRoom);
   // callback : 서버로부터 실행되는 function
   // 특정한 이벤트를 emit 할 수 있다. emit 하면 argument 보낼 수 있음.
-  roomName = input.value;
-  input.value = "";
+  roomName = roomInput.value;
+  nickInput = nickInput.value;
+  nickInput.value = "";
+  roomInput.value = "";
 }
 
 form.addEventListener("submit", handleRoomSubmit);
