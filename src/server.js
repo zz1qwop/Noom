@@ -1,6 +1,8 @@
 import http from "http";
 // import WebSocket from "ws";
-import SocketIO from "socket.io";
+// import SocketIO from "socket.io";
+const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 import express from "express";
 
 const app = express();
@@ -14,8 +16,18 @@ app.get("/", (req, res) => res.render("home"));
 // app.get("/*", (req, res) => res.redirect("/"));
 
 const httpServer = http.createServer(app); // http server
-const wsServer = SocketIO(httpServer);
+//const wsServer = SocketIO(httpServer);
 // socket.io 설치 -> /socket.io/socket.io.js 라는 url을 준다.
+const wsServer = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true,
+  },
+});
+
+instrument(wsServer, {
+  auth: false,
+});
 
 function publicRooms() {
   const {
