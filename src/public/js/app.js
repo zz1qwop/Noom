@@ -63,12 +63,33 @@ form.addEventListener("submit", handleRoomSubmit);
   4. function : 끝날 때 실행되는 함수를 보내고 싶으면 마지막 인수에 넣는다.
   */
 
-socket.on("welcome", (user) => {
+socket.on("welcome", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
   addMessage(`${user} arrived!`);
 });
 
-socket.on("bye", (left) => {
+socket.on("bye", (left, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
   addMessage(`${left} left!`);
 });
 
 socket.on("new_message", addMessage);
+
+socket.on("room_change", (rooms) => {
+  // 한 번 실행할 때 화면이 방의 목록을 그려준다.
+  // 다시 한 번 실행할 때 (room) 목룍이 비어있으면 아무것도 하지 않는다.
+  // 하지만 이미 그려둔 것은 유지되는 상황. -> if문으로 확인
+
+  const roomList = welcome.querySelector("ul");
+  roomList.innerHTML = "";
+  if (rooms.length === 0) {
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.append(li);
+  });
+});
