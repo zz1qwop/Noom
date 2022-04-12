@@ -22,6 +22,10 @@ wsServer.on("connection", (socket) => {
     done();
     socket.to(roomName).emit("welcome");
   });
+  socket.on("offer", (offer, roomName) => {
+    socket.to(roomName).emit("offer", offer);
+    // socket.to : 본인을 제외한 다른 유저에게
+  });
 });
 
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
